@@ -18,7 +18,8 @@ class MemberHandler:
         return [{
             'id': checkout.id,
             'member_id': checkout.reservation.member.id,
-            'full_name': str(checkout.reservation.member.name),
+            'member_first_name': str(
+                checkout.reservation.member.first_name),
             'reservation': self.generate_reservation_response(
                 checkout.reservation)
         } for checkout in checkouts]
