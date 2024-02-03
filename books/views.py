@@ -25,8 +25,14 @@ class ReserveView(APIView):
     def post(self, request, *args, **kwargs):
         member_id = kwargs.get('member_id')
         book_id = kwargs.get('book_id')
-        start_date = request.data.get('start_date')
         due_date = request.data.get('due_date')
         data = MemberHandler().reserve_book(
-            member_id, book_id, start_date, due_date)
+            member_id, book_id, due_date)
         return Response(data=data, status=status.HTTP_200_OK)
+
+    def delete(self, request, *args, **kwargs):
+        member_id = kwargs.get('member_id')
+        book_id = kwargs.get('book_id')
+        data = MemberHandler().return_book(
+            member_id, book_id)
+

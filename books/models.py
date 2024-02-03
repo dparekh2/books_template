@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from django.db import models
 
@@ -36,12 +36,16 @@ class Member(models.Model):
 
 class Reservation(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    member = models.ForeignKey(
+        Member, on_delete=models.CASCADE, name='member_reservations')
     start_date = models.DateField(default=date.today)
-    due_date = models.DateField(default=date.today)
+    due_date = models.DateField(
+        default=date.today() + timedelta(days=7))
 
 
 class Checkout(models.Model):
     reservation = models.ForeignKey(
-        Reservation, on_delete=models.CASCADE)
+        Reservation, on_delete=models.CASCADE, name='reservation_checkouts')
     overdue = models.BooleanField(default=False)
+    fine_amount = models.IntegerField(default=0)
+    is_returned = models.BooleanField(default=False)
