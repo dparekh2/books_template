@@ -1,5 +1,8 @@
+from django.db.models import Avg, F, Count
+
 from .models import (
-    Book
+    Book,
+    Reservation
 )
 
 
@@ -24,3 +27,14 @@ class BooksHandler:
         books = Book.objects.order_by('-name')
         return [self.generate_book_response(
             book) for book in books]
+
+    def get_books_analytics(self):
+        return {
+            'most_popular_books': Book.objects.all().order_by(
+                'reservation').values_list('name'),
+            'avg_checkout_duration': Reservation.objects.annotate(
+                diff=F('due_date') - F('start_date')).aggregate(
+                duration=Avg('diff')),
+            'most_active_members': Reservation.objects.all().annotate(
+                active=Count('member')).values_list('member__first_name')
+        }

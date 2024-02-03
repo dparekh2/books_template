@@ -12,5 +12,11 @@ urlpatterns = [
          name='members'),
     path("reserve/book/<int:book_id>/member/<int:member_id>/",
          views.ReserveView.as_view(),
-         name='reserve')
+         name='reserve'),
+    path("checkouts/",
+         views.ReturnView.as_view(),
+         name='checkouts'),
+    path("analytics/",
+         views.AnalyticsView.as_view(),
+         name='analytics')
 ]

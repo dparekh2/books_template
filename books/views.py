@@ -30,9 +30,21 @@ class ReserveView(APIView):
             member_id, book_id, due_date)
         return Response(data=data, status=status.HTTP_200_OK)
 
-    def delete(self, request, *args, **kwargs):
-        member_id = kwargs.get('member_id')
-        book_id = kwargs.get('book_id')
-        data = MemberHandler().return_book(
-            member_id, book_id)
 
+class ReturnView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        data = MemberHandler().get_checkouts()
+        return Response(data=data, status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        checkout_id = request.data.get('checkout_id')
+        data = MemberHandler().return_book(checkout_id)
+        return Response(data=data, status=status.HTTP_200_OK)
+
+
+class AnalyticsView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        data = BooksHandler().get_books_analytics()
+        return Response(data=data, status=status.HTTP_200_OK)

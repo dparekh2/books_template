@@ -2,8 +2,6 @@ from datetime import date, timedelta
 
 from django.db import models
 
-# Create your models here.
-
 
 class Author(models.Model):
     name = models.CharField(max_length=100)
@@ -22,7 +20,7 @@ class Book(models.Model):
 
 
 class Member(models.Model):
-    prefix = models.CharField(max_length=3, null=True)
+    prefix = models.CharField(max_length=3, null=True, blank=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
 
@@ -37,15 +35,19 @@ class Member(models.Model):
 class Reservation(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     member = models.ForeignKey(
-        Member, on_delete=models.CASCADE, name='member_reservations')
+        Member, on_delete=models.CASCADE)
     start_date = models.DateField(default=date.today)
     due_date = models.DateField(
         default=date.today() + timedelta(days=7))
 
+    def __str__(self):
+        if self.book and self.member:
+            return str(self.book) + ' reserved by ' + str(self.member)
+
 
 class Checkout(models.Model):
     reservation = models.ForeignKey(
-        Reservation, on_delete=models.CASCADE, name='reservation_checkouts')
+        Reservation, on_delete=models.CASCADE)
     overdue = models.BooleanField(default=False)
     fine_amount = models.IntegerField(default=0)
     is_returned = models.BooleanField(default=False)

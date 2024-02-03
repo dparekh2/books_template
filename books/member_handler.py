@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from .models import (
     Book,
@@ -13,21 +13,28 @@ from .constants import ErrorMessages
 
 class MemberHandler:
 
+    def get_checkouts(self):
+        checkouts = Checkout.objects.all()
+        return [{
+            'id': checkout.id,
+            'reservation': self.generate_reservation_response(checkout.reservation)
+        } for checkout in checkouts]
+
     def generate_reservation_response(self, reservation):
         checkouts = Checkout.objects.filter(
-                reservation=reservation)
+                reservation=reservation, is_returned=False)
         return {
             'book': BooksHandler().generate_book_response(
                 reservation.book),
             'is_checked_out': checkouts.exists(),
             'start_date': reservation.start_date,
             'due_date': reservation.due_date,
-            'is_overdue': checkouts.first().is_overdue if checkouts else False
+            'is_overdue': checkouts.first().overdue if checkouts else False
         }
 
     def refresh_fines(self, member_checkouts):
         for checkout in member_checkouts:
-            if checkout.reservation.due_date < date.today:
+            if checkout.reservation.due_date < date.today():
                 checkout.overdue = True
                 days_late = (date.today() - checkout.reservation.due_date).days
                 checkout.fine_amount = days_late * 50
@@ -79,7 +86,7 @@ class MemberHandler:
             book=book, member=member)
 
         if BooksHandler().is_book_available(book):
-            start_date = date.today
+            start_date = date.today()
             Checkout.objects.create(
                 reservation=reservation)
             book.available_copies = book.available_copies - 1
@@ -88,5 +95,21 @@ class MemberHandler:
             start_date = self.get_earliest_available_date(book)
 
         reservation.start_date = start_date
+        reservation.due_date = start_date + timedelta(days=7)
         reservation.save()
         return self.generate_member_response(member)
+
+    def return_book(self, checkout_id):
+        checkout = Checkout.objects.filter(
+            id=checkout_id, is_returned=False).first()
+        if not checkout:
+            return {
+                'error': 'this book already returned!'
+            }
+        checkout.is_returned = True
+        checkout.fine_amount = 0
+        checkout.reservation.book.available_copies += 1
+        checkout.reservation.book.save()
+        checkout.save()
+        return self.generate_reservation_response(
+            checkout.reservation)
