@@ -1,0 +1,117 @@
+{
+	"info": {
+		"_postman_id": "df5814ce-9ee6-4a27-85ee-414a133be2d4",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "17575781"
+	},
+	"item": [
+		{
+			"name": "Get Available Books",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://127.0.0.1:8000/books/"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Members",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{BASE_URL}}/books/members/"
+			},
+			"response": []
+		},
+		{
+			"name": "Reserve Book",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/books/reserve/book/:book_id/member/:member_id/",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"books",
+						"reserve",
+						"book",
+						":book_id",
+						"member",
+						":member_id",
+						""
+					],
+					"variable": [
+						{
+							"key": "book_id",
+							"value": "17"
+						},
+						{
+							"key": "member_id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Checkouts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{BASE_URL}}/books/checkouts/"
+			},
+			"response": []
+		},
+		{
+			"name": "Return Book",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/books/reserve/book/:book_id/member/:member_id/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"books",
+						"reserve",
+						"book",
+						":book_id",
+						"member",
+						":member_id",
+						""
+					],
+					"variable": [
+						{
+							"key": "book_id",
+							"value": ""
+						},
+						{
+							"key": "member_id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Analytics",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{BASE_URL}}/books/analytics/"
+			},
+			"response": []
+		}
+	]
+}
