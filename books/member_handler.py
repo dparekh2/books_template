@@ -17,7 +17,10 @@ class MemberHandler:
         checkouts = Checkout.objects.all()
         return [{
             'id': checkout.id,
-            'reservation': self.generate_reservation_response(checkout.reservation)
+            'member_id': checkout.reservation.member.id,
+            'full_name': str(checkout.reservation.member.name),
+            'reservation': self.generate_reservation_response(
+                checkout.reservation)
         } for checkout in checkouts]
 
     def generate_reservation_response(self, reservation):

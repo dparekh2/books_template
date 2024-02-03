@@ -31,10 +31,10 @@ class BooksHandler:
     def get_books_analytics(self):
         return {
             'most_popular_books': Book.objects.all().order_by(
-                'reservation').values_list('name')[0:5],
+                'reservation').values('name')[0:5],
             'avg_checkout_duration': Reservation.objects.annotate(
                 diff=F('due_date') - F('start_date')).aggregate(
                 duration=Avg('diff')),
             'most_active_members': Reservation.objects.all().annotate(
-                active=Count('member')).values_list('member__first_name')[0:3]
+                active=Count('member')).values('member__first_name')[0:3]
         }
